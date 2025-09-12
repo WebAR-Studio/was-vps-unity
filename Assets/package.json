@@ -1,0 +1,13 @@
+{
+    "name": "com.arstudio.wasvps",
+    "displayName": "WASVPS",
+    "version": "0.1.0",
+    "unity": "2022.3",
+    "description": "WASVPS Visual Positioning System SDK for Unity.",
+    "dependencies": {
+        "com.unity.xr.arfoundation": "5.0.2",
+        "com.unity.xr.arcore": "5.0.2",
+        "com.unity.xr.arkit": "5.0.2",
+    	"com.unity.nuget.newtonsoft-json": "2.0.2"
+    }
+}
