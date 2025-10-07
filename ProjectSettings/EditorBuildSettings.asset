@@ -5,12 +5,9 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/Scenes/TestScene.unity
-    guid: 6c9cc888346a24633a3d6aaf4298664f
   - enabled: 1
-    path: Assets/Scenes/StageScene.unity
-    guid: b54161035199748d88bc89ee53c4e53a
+    path: Assets/Rokid/Scenes/RokidScene.unity
+    guid: 8770a75f4990b894ab8fb90e2b73ccdc
   m_configObjects:
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: d14ab5c932a324960b06b723b9f7ddb3,
       type: 2}

@@ -207,8 +207,17 @@ namespace WASVPS
                     {
                         if (_currentSettings != null)
                         {
-                            _algorithm = new WASVPSLocalisationAlgorithm(DefaultUrl, this, _provider, _currentSettings, SendGPS);
-                            ConfigureAlgorithmListeners(_algorithm);
+                            VPSLogger.Log(LogLevel.DEBUG, "Set WASVPSLocalisationAlgorithm");
+                            try
+                            {
+                                _algorithm = new WASVPSLocalisationAlgorithm(DefaultUrl, this, _provider, _currentSettings, SendGPS);
+                                ConfigureAlgorithmListeners(_algorithm);
+                            }
+                            catch (Exception ex)
+                            {
+                                VPSLogger.Log(LogLevel.ERROR, ex.Message);
+                            }
+                            
                         }
                         else
                         {

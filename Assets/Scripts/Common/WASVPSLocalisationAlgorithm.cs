@@ -118,18 +118,18 @@ namespace WASVPS
         /// <returns>The routine.</returns>
         private IEnumerator LocalisationRoutine()
         {
-#if !UNITY_EDITOR
-            bool isARInitialized = false;
-            yield return _localisationService.StartCoroutine(ARAvailabilityChecking.StartChecking((status) => isARInitialized = status));
+//#if !UNITY_EDITOR
+//            bool isARInitialized = false;
+//            yield return _localisationService.StartCoroutine(ARAvailabilityChecking.StartChecking((status) => isARInitialized = status));
 
-            if (!isARInitialized)
-            {
-                ErrorInfo error = new ErrorInfo(ErrorCode.AR_NOT_SUPPORTED, "AR is not supported on current device");
-                OnErrorHappend?.Invoke(error);
-                VPSLogger.Log(LogLevel.ERROR, error.LogDescription());
-                yield break;
-            }
-#endif
+//            if (!isARInitialized)
+//            {
+//                ErrorInfo error = new ErrorInfo(ErrorCode.AR_NOT_SUPPORTED, "AR is not supported on current device");
+//                OnErrorHappend?.Invoke(error);
+//                VPSLogger.Log(LogLevel.ERROR, error.LogDescription());
+//                yield break;
+//            }
+//#endif
 
             _attemptCount = 0;
             MetricsCollector.Instance.StartStopwatch(FullLocalizationStopWatch);
