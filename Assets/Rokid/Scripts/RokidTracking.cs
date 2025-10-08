@@ -4,32 +4,44 @@ using WASVPS;
 public class RokidTracking : MonoBehaviour, IWASVPSTracking
 {
     [SerializeField] private Transform _camera;
-    private bool _isLocalized = false;
+    private WASVPSTrackingData _trackingData = new WASVPSTrackingData();
+
+    private void UpdateTrackingData()
+    {
+        if (_camera != null)
+        {
+            _trackingData.Position = _camera.localPosition;
+            _trackingData.Rotation = _camera.localRotation;
+        }
+    }
 
     public WASVPSTrackingData GetLocalTracking()
     {
-        return new WASVPSTrackingData
+        if (_camera == null)
         {
-            Position = _camera.localPosition,
-            Rotation = _camera.localRotation
-        };
+            VPSLogger.Log(LogLevel.ERROR, "Camera is not available, returning last known tracking data");
+            return _trackingData;
+        }
+
+        UpdateTrackingData();
+        return _trackingData;
     }
 
     public bool IsLocalized()
     {
-        return _isLocalized;
+        return !string.IsNullOrEmpty(_trackingData.LocationId);
     }
 
     public bool Localize(string locationId)
     {
-        Debug.Log($"[RokidTracking] Localized to location: {locationId}");
-        _isLocalized = true;
+        if (_trackingData.LocationId == locationId) return false;
+        _trackingData.LocationId = locationId;
         return true;
     }
 
     public void ResetTracking()
     {
         Debug.Log("[RokidTracking] Reset tracking.");
-        _isLocalized = false;
+        _trackingData = new WASVPSTrackingData();
     }
 }

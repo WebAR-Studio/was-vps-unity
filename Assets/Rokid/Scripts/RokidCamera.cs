@@ -10,15 +10,23 @@ public class RokidCamera : MonoBehaviour, IWASVPSCamera
     [SerializeField] private bool _isNeedRotate = false;
 
     private WebCamTexture _webcam;
-    private Texture2D _frameTex;
     private bool _isReady;
 
-    private int _width = 540;
-    private int _height = 960;
+    private int _width = 1920;
+    private int _height = 1080;
     private TextureFormat _textureFormat;
 
     private const int _targetW = 540;
     private const int _targetH = 960;
+
+    private Texture2D _croppedTex;
+    private Texture2D _finalTex;
+
+    private void OnDestroy()
+    {
+        if (_croppedTex != null) Destroy(_croppedTex);
+        if (_finalTex != null) Destroy(_finalTex);
+    }
 
     public void Init(WASVPSTextureRequirement[] requirements)
     {
@@ -36,6 +44,13 @@ public class RokidCamera : MonoBehaviour, IWASVPSCamera
             _isReady = false;
             yield break;
         }
+        else
+        {
+            foreach(var device in WebCamTexture.devices)
+            {
+                Debug.Log($"Device: {device.name}, availableResolutions: {string.Join(',', device.availableResolutions)}");
+            }
+        }
 
         if (requirements != null && requirements.Length > 0)
         {
@@ -44,12 +59,11 @@ public class RokidCamera : MonoBehaviour, IWASVPSCamera
             _height = req.Height > 0 ? req.Height : _height;
             _textureFormat = req.Format;
         }
+        _croppedTex = new Texture2D(_targetW, _targetH, _textureFormat, false);
+        _finalTex = new Texture2D(_targetW, _targetH, _textureFormat, false);
 
         _webcam = new WebCamTexture(WebCamTexture.devices[0].name, _width, _height, 30);
         _webcam.Play();
-
-        _frameTex = new Texture2D(_width, _height, _textureFormat, false);
-        
         _isReady = true;
         Debug.Log($"[RokidCamera] Камера инициализирована: {_width}x{_height}");
     }
@@ -65,50 +79,43 @@ public class RokidCamera : MonoBehaviour, IWASVPSCamera
 
         int srcW = _webcam.width;
         int srcH = _webcam.height;
-
         Color32[] pixels = _webcam.GetPixels32();
 
         if (srcW > srcH && _isNeedRotate)
         {
             pixels = Rotate90(pixels, srcW, srcH);
-            int tmp = srcW;
-            srcW = srcH;
-            srcH = tmp;
+            (srcH, srcW) = (srcW, srcH);
         }
 
         float targetAspect = (float)_targetW / _targetH;
         float srcAspect = (float)srcW / srcH;
-
         int cropW = srcW;
         int cropH = srcH;
 
         if (Mathf.Abs(srcAspect - targetAspect) > 0.001f)
         {
             if (srcAspect > targetAspect)
-            {
                 cropW = Mathf.RoundToInt(srcH * targetAspect);
-                cropH = srcH;
-            }
             else
-            {
-                cropW = srcW;
                 cropH = Mathf.RoundToInt(srcW / targetAspect);
-            }
 
             pixels = CropCenter(pixels, srcW, srcH, cropW, cropH);
             srcW = cropW;
             srcH = cropH;
         }
 
-        Texture2D croppedTex = new Texture2D(srcW, srcH, TextureFormat.RGBA32, false);
-        croppedTex.SetPixels32(pixels);
-        croppedTex.Apply(false);
+        if (_croppedTex.width != srcW || _croppedTex.height != srcH)
+        {
+            Destroy(_croppedTex);
+            _croppedTex = new Texture2D(srcW, srcH, _textureFormat, false);
+        }
+        _croppedTex.SetPixels32(pixels);
+        _croppedTex.Apply(false);
 
-        Texture2D finalTex = new Texture2D(_targetW, _targetH, TextureFormat.RGBA32, false);
-        ScaleTexture(croppedTex, finalTex);
-        _webTextureField.texture = finalTex;
-        Debug.Log($"Final frame: {finalTex.width}x{finalTex.height}");
-        return finalTex;
+        ScaleTexture(_croppedTex, _finalTex);
+
+        _webTextureField.texture = _finalTex;
+        return _finalTex;
     }
 
     private Color32[] Rotate90(Color32[] src, int width, int height)

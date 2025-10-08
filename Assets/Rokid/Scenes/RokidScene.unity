@@ -952,7 +952,7 @@ PrefabInstance:
     - target: {fileID: 998734371729319169, guid: 81457cc315b8c5c4b9dafb5b1987a184,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2874593738232662285, guid: 81457cc315b8c5c4b9dafb5b1987a184,
         type: 3}
@@ -1374,6 +1374,16 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8690752167743118256, guid: f5ddf2d28f817ce42a7d59e707029842,
+        type: 3}
+      propertyPath: FreezeYPos
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8690752167743118256, guid: f5ddf2d28f817ce42a7d59e707029842,
+        type: 3}
+      propertyPath: RotateOnlyY
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8690752167743118258, guid: f5ddf2d28f817ce42a7d59e707029842,
         type: 3}
       propertyPath: m_RootOrder
@@ -1468,6 +1478,11 @@ PrefabInstance:
         type: 3}
       propertyPath: locationsIds.Array.data[0]
       value: 68dd32fdeccd3c6ae1defef9
+      objectReference: {fileID: 0}
+    - target: {fileID: 8690752168016233484, guid: f5ddf2d28f817ce42a7d59e707029842,
+        type: 3}
+      propertyPath: format
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8690752168016233484, guid: f5ddf2d28f817ce42a7d59e707029842,
         type: 3}

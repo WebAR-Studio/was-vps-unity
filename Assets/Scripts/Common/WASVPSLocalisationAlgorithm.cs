@@ -229,7 +229,9 @@ namespace WASVPS
 
                 bool changeLocationId = tracking.Localize(_locationState.Localisation.LocationId);
                 if (changeLocationId)
+                {
                     _provider.ResetSessionId();
+                }
 
                 _locationState.Localisation = arRFoundationApplyer?.ApplyVpsTransform(_locationState.Localisation, _isLocalization);
 
