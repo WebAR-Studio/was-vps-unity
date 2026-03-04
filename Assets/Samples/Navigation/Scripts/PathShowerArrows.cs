@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [DisallowMultipleComponent]
-public class SamplePathShowerArrows : MonoBehaviour
+public class PathShowerArrows : MonoBehaviour
 {
     [SerializeField] private Transform _startPoint;
     [SerializeField] private GameObject _arrowPrefab;
@@ -26,7 +26,11 @@ public class SamplePathShowerArrows : MonoBehaviour
     private bool _isActive;
     private bool _wasOnNavMesh;
 
+    /// <summary>
+    /// Invoked when the start point leaves NavMesh after previously being on it.
+    /// </summary>
     public event Action OnLeftNavMesh;
+
     public bool IsVisible => _isVisible;
     public Transform StartPoint => _startPoint;
 
@@ -40,12 +44,20 @@ public class SamplePathShowerArrows : MonoBehaviour
         HidePath();
     }
 
+    /// <summary>
+    /// Sets the current navigation target in world coordinates.
+    /// </summary>
+    /// <param name="worldPosition">Destination world position.</param>
     public void SetTarget(Vector3 worldPosition)
     {
         _targetPosition = worldPosition;
         _hasTarget = true;
     }
 
+    /// <summary>
+    /// Starts path updates and optionally renders arrow instances.
+    /// </summary>
+    /// <param name="visible">Whether to render arrows while tracking the route.</param>
     public void ShowPath(bool visible = true)
     {
         EnsurePath();
@@ -64,6 +76,9 @@ public class SamplePathShowerArrows : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Stops path updates and hides all rendered arrows.
+    /// </summary>
     public void HidePath()
     {
         _isActive = false;
@@ -79,6 +94,10 @@ public class SamplePathShowerArrows : MonoBehaviour
         ClearArrows();
     }
 
+    /// <summary>
+    /// Returns the latest calculated path distance in meters.
+    /// </summary>
+    /// <returns>Total length of path corners or zero when unavailable.</returns>
     public float GetDistanceToTarget()
     {
         EnsurePath();
@@ -97,6 +116,10 @@ public class SamplePathShowerArrows : MonoBehaviour
         return total;
     }
 
+    /// <summary>
+    /// Returns estimated travel time to the current target.
+    /// </summary>
+    /// <returns>Estimated time in seconds or positive infinity when speed is invalid.</returns>
     public float GetTimeToTarget()
     {
         if (_middleSpeed <= 0.01f)

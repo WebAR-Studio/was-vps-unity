@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a8f8cbf52254889b9f0a4ef8ad9987f, type: 3}
+  m_Name: NavigationPointsCatalog
+  m_EditorClassIdentifier: 
+  _points:
+  - Id: store_12_storeez
+    Title: 12 STOREEZ
+    WorkingHours: 10:00-22:00
+    Address: Aviapark Mall, Khodynsky Blvd 4, Moscow
+    RoomAddress: Floor 3, sector 23
+    Description: "Floor 3, sector 23.\n\nMinimal wardrobe for men and women.\n\n12 STOREEZ is a Russian clothing brand founded by twin sisters Irina and Marina Golomazdina and Ivan Khokhlov. The brand releases 12 stories each year - mini collections where all items are easy to combine.\n\nThe idea is to build a thoughtful long-lasting wardrobe and refresh it 1-2 times per season with relevant pieces."
+    Icon: {fileID: 21300000, guid: e4da56e4f745efe40956360fa93ef193, type: 3}
+    Image: {fileID: 21300000, guid: bce158ee2a010484a9c939825b74f358, type: 3}
+    Position: {x: -7.12, y: -1.42, z: -8.79}
+  - Id: food_kfc
+    Title: KFC
+    WorkingHours: 10:00-22:00
+    Address: Aviapark Mall, Khodynsky Blvd 4, Moscow
+    RoomAddress: Floor 2, Food Court
+    Description: "Fast-food restaurant with fried chicken, combo meals, and drinks. Located near the food court."
+    Icon: {fileID: 21300000, guid: 043697b3cef7e7f4788a0d2c0182626a, type: 3}
+    Image: {fileID: 21300000, guid: bce158ee2a010484a9c939825b74f358, type: 3}
+    Position: {x: 0, y: -1.42, z: -2.89}
+  - Id: food_macdonalds
+    Title: MacDonalds
+    WorkingHours: 10:00-22:00
+    Address: Aviapark Mall, Khodynsky Blvd 4, Moscow
+    RoomAddress: Floor 2, Food Court, West Wing
+    Description: "Quick-service restaurant with burgers, fries, desserts, and coffee. Located in the main dining area."
+    Icon: {fileID: 21300000, guid: 043697b3cef7e7f4788a0d2c0182626a, type: 3}
+    Image: {fileID: 21300000, guid: bce158ee2a010484a9c939825b74f358, type: 3}
+    Position: {x: 19.348, y: -1.42, z: -0.277}
+  - Id: security_point
+    Title: Security Point
+    WorkingHours: 24/7
+    Address: Aviapark Mall, Khodynsky Blvd 4, Moscow
+    RoomAddress: Floor 1, Central Entrance
+    Description: "Security assistance point for visitor support, lost and found, and emergency help."
+    Icon: {fileID: 21300000, guid: 1f4c6ef26d554dd458dcaae229d846d3, type: 3}
+    Image: {fileID: 21300000, guid: bce158ee2a010484a9c939825b74f358, type: 3}
+    Position: {x: 7.8, y: -1.42, z: -6.1}
