@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 [DisallowMultipleComponent]
@@ -15,6 +16,7 @@ public class NavigationRouteUiController : MonoBehaviour
     [SerializeField] private GameObject _tripSummaryView;
     [SerializeField] private GameObject _arrivalActionsView;
     [SerializeField] private GameObject _aboutView;
+    [SerializeField] private Camera _loaderFxCamera;
 
     private NavMenuView _menuViewPresenter;
     private NavLocalizingView _localizingViewPresenter;
@@ -26,6 +28,7 @@ public class NavigationRouteUiController : MonoBehaviour
     private int _currentPointIndex = -1;
     private bool _awaitingArrivalAction;
     private float _lastRemainingTime;
+    private Coroutine _startRouteRoutine;
 
     private void OnEnable()
     {
@@ -36,6 +39,8 @@ public class NavigationRouteUiController : MonoBehaviour
 
         ResolveViewReferences();
         ResolveViewPresenters();
+        ResolveLoaderFxCamera();
+        SetLoaderFxCameraActive(false);
         BindViewPresenters();
         SubscribeToSequencer();
         RebuildPointList();
@@ -54,6 +59,8 @@ public class NavigationRouteUiController : MonoBehaviour
 
     private void OnDisable()
     {
+        StopStartRouteRoutine();
+        SetLoaderFxCameraActive(false);
         _localizingViewPresenter?.SetLoadingActive(false);
         UnsubscribeFromSequencer();
         UnbindViewPresenters();
@@ -88,22 +95,8 @@ public class NavigationRouteUiController : MonoBehaviour
             return;
         }
 
-        if (!_routeSequencer.StartRouteToPoint(pointIndex))
-        {
-            return;
-        }
-
-        _currentPointIndex = pointIndex;
-        _currentPoint = null;
-        _awaitingArrivalAction = false;
-
-        if (_routeSequencer.IsVpsReady)
-        {
-            ShowRouteProgress();
-            return;
-        }
-
-        ShowLocalizing(LocalizingMessage);
+        StopStartRouteRoutine();
+        _startRouteRoutine = StartCoroutine(StartRouteWithLocalizingFirst(pointIndex));
     }
 
     /// <summary>
@@ -111,6 +104,7 @@ public class NavigationRouteUiController : MonoBehaviour
     /// </summary>
     public void ReturnToPointMenu()
     {
+        StopStartRouteRoutine();
         _awaitingArrivalAction = false;
         _routeSequencer?.StopRoute();
         ShowPointMenu();
@@ -148,6 +142,20 @@ public class NavigationRouteUiController : MonoBehaviour
         _tripSummaryView = ResolveViewRoot<NavTripSummaryView>(_tripSummaryView, "TripSummaryView", "NavTripSummaryView");
         _arrivalActionsView = ResolveViewRoot<NavArrivalView>(_arrivalActionsView, "ArrivalActionsView", "NavArrivalView");
         _aboutView = ResolveViewRoot<NavAboutView>(_aboutView, "AboutView", "NavAboutView");
+    }
+
+    private void ResolveLoaderFxCamera()
+    {
+        if (_loaderFxCamera != null)
+        {
+            return;
+        }
+
+        var loaderCameraObject = GameObject.Find("LoaderFXCamera");
+        if (loaderCameraObject != null)
+        {
+            _loaderFxCamera = loaderCameraObject.GetComponent<Camera>();
+        }
     }
 
     private void ResolveViewPresenters()
@@ -373,6 +381,41 @@ public class NavigationRouteUiController : MonoBehaviour
         SetViewState(menuVisible: false, localizingVisible: false, routeVisible: true, arrivalVisible: false, aboutVisible: false);
     }
 
+    private IEnumerator StartRouteWithLocalizingFirst(int pointIndex)
+    {
+        ShowLocalizing(LocalizingMessage);
+        yield return null;
+
+        if (_routeSequencer == null || !_routeSequencer.StartRouteToPoint(pointIndex))
+        {
+            ShowPointMenu();
+            _startRouteRoutine = null;
+            yield break;
+        }
+
+        _currentPointIndex = pointIndex;
+        _currentPoint = null;
+        _awaitingArrivalAction = false;
+
+        if (_routeSequencer.IsVpsReady)
+        {
+            ShowRouteProgress();
+        }
+
+        _startRouteRoutine = null;
+    }
+
+    private void StopStartRouteRoutine()
+    {
+        if (_startRouteRoutine == null)
+        {
+            return;
+        }
+
+        StopCoroutine(_startRouteRoutine);
+        _startRouteRoutine = null;
+    }
+
     private void UpdateRouteProgressViews(float distance)
     {
         if (_tripSummaryViewPresenter == null)
@@ -411,7 +454,17 @@ public class NavigationRouteUiController : MonoBehaviour
             _aboutView.SetActive(aboutVisible);
         }
 
+        SetLoaderFxCameraActive(localizingVisible);
         _localizingViewPresenter?.SetLoadingActive(localizingVisible);
+    }
+
+    private void SetLoaderFxCameraActive(bool isActive)
+    {
+        ResolveLoaderFxCamera();
+        if (_loaderFxCamera != null)
+        {
+            _loaderFxCamera.enabled = isActive;
+        }
     }
 
     private GameObject ResolveViewRoot<T>(GameObject assignedView, params string[] candidateNames) where T : Component
